@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<gens>
+    <personne>
+        <prenom>John</prenom>
+        <nom>Doe</nom>
+        <date_de_naissance>1990-05-15</date_de_naissance>
+        <ville>New York</ville>
+    </personne>
+    <personne>
+        <prenom>Alice</prenom>
+        <nom>Smith</nom>
+        <date_de_naissance>1985-10-20</date_de_naissance>
+        <ville>Paris</ville>
+    </personne>
+    <personne>
+        <prenom>Bob</prenom>
+        <nom>Johnson</nom>
+        <date_de_naissance>1978-03-28</date_de_naissance>
+        <ville>Londres</ville>
+    </personne>
+    <personne>
+        <prenom>Emma</prenom>
+        <nom>Williams</nom>
+        <date_de_naissance>1995-12-03</date_de_naissance>
+        <ville>Tokyo</ville>
+    </personne>
+</gens>
