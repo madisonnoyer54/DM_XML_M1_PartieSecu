@@ -1,0 +1,6 @@
+<QUERY>
+/personnes/individu[prenom='Marc']
+</QUERY>
+<RESULT>
+oui
+</RESULT>

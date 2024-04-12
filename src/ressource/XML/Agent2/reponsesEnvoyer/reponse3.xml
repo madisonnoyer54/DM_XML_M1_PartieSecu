@@ -1,0 +1,8 @@
+<Reponse>
+<QUERY>
+/personnes/individu[date_de_naissance='2000-01-01']
+</QUERY> 
+ <RESULT> 
+NON, L'agent de nom Agent2 n'à pas l'information de cette requete dans sa Base de donnée.
+</RESULT>
+</Reponse>

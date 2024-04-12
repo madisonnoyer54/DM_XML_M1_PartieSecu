@@ -13,7 +13,6 @@ import javax.xml.crypto.dsig.spec.TransformParameterSpec;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.*;
@@ -43,7 +42,7 @@ public class Agent {
     private ArrayList<Document> requetes;
 
     /**
-     *
+     * Les reponses a envoyer à l'autre agent
      */
     private ArrayList<Document> reponse;
 
@@ -121,8 +120,8 @@ public class Agent {
     /**
      * Fonction qui permet de démarrer le Thread de l'agent, donc la pertage des document.
      */
-    public void demarrageThread(ArrayList<Document> lesRequettes, String nom){
-        Thread threadAgent = new MonThread(this, lesRequettes, nom);
+    public void demarrageThread(ArrayList<Document> lesRequettes, ArrayList<Document> lesReponses){
+        Thread threadAgent = new MonThread(this, lesRequettes, lesReponses);
         threadAgent.start();
     }
 
@@ -245,6 +244,7 @@ public class Agent {
 
         return resultat;
     }
+
 
 
 }

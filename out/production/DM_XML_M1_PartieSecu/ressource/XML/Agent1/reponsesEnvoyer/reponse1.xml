@@ -1,0 +1,8 @@
+<Reponse>
+<QUERY>
+/gens/personne[prenom='John']
+</QUERY> 
+ <RESULT> 
+OUI, L'agent de nom Agent1 à l'information de cette requete dans sa Base de donnée.
+</RESULT>
+</Reponse>

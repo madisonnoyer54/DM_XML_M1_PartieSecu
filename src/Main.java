@@ -21,8 +21,8 @@ public class Main {
         agent2.setPublicKeyAutre(agent1.getKeyPair().encodePublicKey());
 
         // On active les thread des agents
-       agent1.demarrageThread(agent2.getRequetes(), agent2.getNom());
-       agent2.demarrageThread(agent1.getRequetes(), agent2.getNom());
+       agent1.demarrageThread(agent2.getRequetes(), agent2.getReponse());
+       agent2.demarrageThread(agent1.getRequetes(), agent1.getReponse());
 
     }
 

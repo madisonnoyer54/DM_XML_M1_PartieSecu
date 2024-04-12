@@ -1,0 +1,6 @@
+<QUERY>
+/gens/personne[prenom='John']
+</QUERY>
+<RESULT>
+oui
+</RESULT>
