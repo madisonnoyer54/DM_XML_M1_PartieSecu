@@ -13,8 +13,11 @@ import javax.xml.crypto.dsig.spec.TransformParameterSpec;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
@@ -52,19 +55,12 @@ public class Agent {
      */
     private String nom;
 
-    /**
-     * Permet de savoir le nombre de requet envoyer de l'autre agent.
-     */
-    private int nombreDocument;
-
 
     /**
      * Constructeur
      * @param nom, le nom de l'agent
-     * @param nombreDoc, nombre de documents que l'autre agent vas lui envoyer
      */
-    public Agent(String nom, int nombreDoc) {
-        nombreDocument = nombreDoc;
+    public Agent(String nom) {
         this.nom = nom;
 
         try {
@@ -115,7 +111,7 @@ public class Agent {
     public void requetes(){
 
         Document document;
-        for (int i = 1; i <= nombreDocument; i++) {
+        for (int i = 1; i <= compteFichier(); i++) {
             try {
                 document = loadXMLDocumentFromResource("XML/" + nom + "/requetes/requete"+i+".xml");
                 document = signerDocument(document);
@@ -124,6 +120,39 @@ public class Agent {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+        }
+    }
+
+
+    /**
+     * Fonction qui permet de compter le nombre de fichier dans un dossier.
+     * @return, le nombre de fichier.
+     */
+    public int compteFichier() {
+        // Obtention de l'URL du dossier
+        URL folderUrl = Agent.class.getClassLoader().getResource("XML/" + nom + "/requetes");
+        if (folderUrl == null) {
+            throw new IllegalArgumentException("Le dossier spécifié n'existe pas.");
+        }
+
+        try {
+            // Conversion de l'URL en chemin de fichier
+            File folder = new File(folderUrl.toURI());
+
+            // Vérification que le chemin correspond à un dossier existant
+            if (!folder.exists() || !folder.isDirectory()) {
+                throw new IllegalArgumentException("Le chemin spécifié n'est pas un dossier valide.");
+            }
+
+            // Comptage des fichiers dans le dossier
+            File[] files = folder.listFiles();
+            if (files == null) {
+                throw new RuntimeException("Impossible de lister les fichiers dans le dossier spécifié.");
+            }
+
+            return files.length;
+        } catch (URISyntaxException e) {
+            throw new RuntimeException("Erreur lors de la conversion de l'URL en URI : " + e.getMessage());
         }
     }
 
@@ -147,6 +176,7 @@ public class Agent {
     public Document loadXMLDocumentFromResource(String chemin) throws Exception {
 
         InputStream inputStream = Agent.class.getClassLoader().getResourceAsStream(chemin);
+
         if (inputStream == null) {
             throw new Exception("Le fichier n'a pas été trouvé");
         }

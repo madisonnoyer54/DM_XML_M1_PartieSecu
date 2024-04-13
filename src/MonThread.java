@@ -132,15 +132,15 @@ public class MonThread extends Thread {
      * @throws Exception
      */
     public void envoyerLaReponse() throws Exception {
-        for(int i= 1; i<= requetes.size() ; i++){
+        for (int i = 1; i <= requetes.size(); i++) {
             String resultat = "<REPONSE>\n\t<QUERY>\n";
-            resultat += "\t\t"+recupererRequet(i-1) + "\n\t</QUERY> \n \t<RESULT> \n";
+            resultat += "\t\t" + recupererRequet(i - 1) + "\n\t</QUERY> \n \t<RESULT> \n";
             try {
-                if(requetesDansBDD(recupererRequet(i-1))){
-                    resultat += "\t\tOUI, j'ai l'information de cette requête dans ma Base de donnée.\n\t\t" + agent.getNom() ;
+                if (requetesDansBDD(recupererRequet(i - 1))) {
+                    resultat += "\t\tOUI, j'ai l'information de cette requête dans ma Base de donnée.\n\t\t" + agent.getNom();
 
-                }else{
-                    resultat += "\t\tNON, je n'ai pas l'information de cette requête dans ma Base de donnée. \n\t\t" + agent.getNom() ;
+                } else {
+                    resultat += "\t\tNON, je n'ai pas l'information de cette requête dans ma Base de donnée. \n\t\t" + agent.getNom();
 
                 }
             } catch (XPathExpressionException e) {
@@ -149,21 +149,29 @@ public class MonThread extends Thread {
             resultat += "\n \t</RESULT>\n</REPONSE>";
 
             // Écrire le résultat dans un fichier
-            String path = "src/ressource/XML/" + agent.getNom() + "/reponsesEnvoyer/reponse" + (i ) + ".xml";
+            String path = "src/ressource/XML/" + agent.getNom() + "/reponsesEnvoyer/reponse" + (i) + ".xml";
             File file = new File(path);
 
-            // Création des dossiers si nécessaire (normalement ils sont déjà créé)
+            // Création des dossiers si nécessaire (normalement ils sont déjà créés)
             file.getParentFile().mkdirs();
 
             try (FileWriter writer = new FileWriter(file)) {
                 writer.write(resultat);
+                writer.flush(); // Assure que toutes les données sont écrites sur le disque
+
             } catch (IOException e) {
                 System.out.println("Erreur lors de l'écriture du fichier : " + e.getMessage());
             }
 
-            Document document = agent.loadXMLDocumentFromResource("XML/" + agent.getNom() + "/reponsesEnvoyer/reponse" + (i ) + ".xml");
-            agent.signerDocument(document); // On signe le document
-            agent.getReponse().add(document); // On envoie le document
+            // Attente supplémentaire pour s'assurer que le fichier est complètement écrit sur le disque
+            Thread.sleep(3000); // Attendre une seconde
+
+            // Signer le document
+            Document document = agent.loadXMLDocumentFromResource("XML/" + agent.getNom() + "/reponsesEnvoyer/reponse" + (i) + ".xml");
+            agent.signerDocument(document);
+
+            // Ajouter le document signé à la liste de réponses
+            agent.getReponse().add(document);
         }
     }
 
