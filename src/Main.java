@@ -16,9 +16,8 @@ public class Main {
     /**
      * Le main.
      * @param args
-     * @throws NoSuchAlgorithmException
      */
-    public static void main(String[] args) throws NoSuchAlgorithmException {
+    public static void main(String[] args) {
 
         agent1 = new Agent("Agent1",3);
         agent2 = new Agent("Agent2",3);
@@ -28,7 +27,7 @@ public class Main {
 
         agent2.setPublicKeyAutre(agent1.getKeyPair().encodePublicKey());
 
-        // On active les threads des agents en passent les reponse et requete de l'autre agent
+        // On active les threads des agents en passent les réponses et requêtes de l'autre agent
        agent1.demarrageThread(agent2.getRequetes(), agent2.getReponse());
        agent2.demarrageThread(agent1.getRequetes(), agent1.getReponse());
 
