@@ -1,3 +1,5 @@
-<QUERY>
-    /personnes/individu[prenom='Marc']
-</QUERY>
+<REQUETE>
+    <QUERY>
+        /personnes/individu[prenom='Marc']
+    </QUERY>
+</REQUETE>

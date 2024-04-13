@@ -1,8 +1,9 @@
-<Reponse>
-<QUERY>
-/personnes/individu[prenom='Marc']
-</QUERY> 
- <RESULT> 
-OUI, L'agent de nom Agent2 à l'information de cette requete dans sa Base de donnée.
-</RESULT>
-</Reponse>
+<REPONSE>
+	<QUERY>
+		/personnes/individu[prenom='Marc']
+	</QUERY> 
+ 	<RESULT> 
+		OUI, j'ai l'information de cette requête dans ma Base de donnée.
+		Agent2
+ 	</RESULT>
+</REPONSE>

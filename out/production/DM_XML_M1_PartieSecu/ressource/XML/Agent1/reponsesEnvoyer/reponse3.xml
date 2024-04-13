@@ -1,8 +1,9 @@
-<Reponse>
-<QUERY>
-/gens/personne[ville='Berlin']
-</QUERY> 
- <RESULT> 
-NON, L'agent de nom Agent1 n'à pas l'information de cette requete dans sa Base de donnée.
-</RESULT>
-</Reponse>
+<REPONSE>
+	<QUERY>
+		/gens/personne[ville='Berlin']
+	</QUERY> 
+ 	<RESULT> 
+		NON, je n'ai pas l'information de cette requête dans ma Base de donnée. 
+		Agent1
+ 	</RESULT>
+</REPONSE>

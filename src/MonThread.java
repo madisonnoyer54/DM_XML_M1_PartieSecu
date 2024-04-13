@@ -1,4 +1,5 @@
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import javax.xml.crypto.MarshalException;
@@ -14,16 +15,29 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 
 public class MonThread extends Thread {
+
+    /**
+     * L'agent
+     */
     private Agent agent;
 
     /**
-     * Les requettes qui viennent de l'autre agent.
+     * Les requêtes qui viennent de l'autre agent.
      */
     private ArrayList<Document> requetes;
 
+    /**
+     * Les réponses qui viennent de l'autre agent.
+     */
     private ArrayList<Document> reponse;
 
 
+    /**
+     * Constructeur
+     * @param agent, l'agent
+     * @param lesRequetes, Les requetes qui sont envoyé par l'autre agent.
+     * @param lesReponses, les reponses qui sont envoyé par l'autre agent.
+     */
     public MonThread(Agent agent, ArrayList<Document> lesRequetes, ArrayList<Document> lesReponses) {
         this.agent = agent;
         requetes = lesRequetes;
@@ -33,19 +47,60 @@ public class MonThread extends Thread {
     }
 
 
+    /**
+     * Le run du Thread.
+     */
     @Override
     public void run() {
-        verifieLesSignature(requetes); // On verifie d'abord les signature des requettes
+
+        // On vérifie la signature de chaque requête envoyée par l'autre agent.
+        verifieLesSignature(requetes);
+
         try {
-            envoyerLaReponse(); // On envoie la reponse
+            // On envoie les réponses en requête lue précèdament.
+            envoyerLaReponse();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         verifieLesSignature(reponse); // On verifie les reponses reçu
 
         // On affiche
+        affichageReponses();
     }
 
+    /**
+     * Fonction qui permet d'afficher les réponses en fonction du document dans la liste.
+     */
+    public void affichageReponses(){
+
+        for (int i = 0; i < reponse.size(); i++) {
+            String[] resulat = new String[2];
+
+            // Recherche de la balise <QUERY> et récupérer l'intérieur
+            NodeList queryList = reponse.get(i).getElementsByTagName("QUERY");
+            if (queryList.getLength() > 0) {
+                Element queryElement = (Element) queryList.item(0);
+                String result = queryElement.getTextContent().trim();
+                resulat[0] = result;
+            }
+
+            // Recherche de la balise <RESULT> et récupérer l'intérieur
+            NodeList resultList = reponse.get(i).getElementsByTagName("RESULT");
+            if (resultList.getLength() > 0) {
+                Element resultElement = (Element) resultList.item(0);
+                String result = resultElement.getTextContent().trim();
+                resulat[1] = result;
+            }
+
+            System.out.println("L'agent qui porte le nom "+ agent.getNom() + " à eu une response à sa requête: " + resulat[0]+".\n La réponse est :\n\n\t" + resulat[1]+"\n\n");
+        }
+    }
+
+
+    /**
+     * Fonction qui permet de vérifier les signatures des documents données en paramètre.
+     * @param list, list qui contient plusieurs documents à l'interieur.
+     */
     public void verifieLesSignature(ArrayList<Document> list){
         Boolean resultat;
         Document doc;
@@ -69,55 +124,61 @@ public class MonThread extends Thread {
                 throw new RuntimeException(e);
             }
         }
-
-
     }
 
+
+    /**
+     * Fonctino qui permet de créer le fichier et d'écrire les réponses à l'intérieur.
+     * @throws Exception
+     */
     public void envoyerLaReponse() throws Exception {
         for(int i= 1; i<= requetes.size() ; i++){
-            String resultat = "<Reponse>\n<QUERY>\n";
-            resultat += recupererRequet(i-1) + "\n</QUERY> \n <RESULT> \n";
+            String resultat = "<REPONSE>\n\t<QUERY>\n";
+            resultat += "\t\t"+recupererRequet(i-1) + "\n\t</QUERY> \n \t<RESULT> \n";
             try {
-                if(requetesDansBDD(i-1)){
-                    resultat += "OUI, L'agent de nom " + agent.getNom() + " à l'information de cette requete dans sa Base de donnée." ;
+                if(requetesDansBDD(recupererRequet(i-1))){
+                    resultat += "\t\tOUI, j'ai l'information de cette requête dans ma Base de donnée.\n\t\t" + agent.getNom() ;
 
                 }else{
-                    // System.out.println("noon");
-                    resultat += "NON, L'agent de nom " + agent.getNom() + " n'à pas l'information de cette requete dans sa Base de donnée." ;
+                    resultat += "\t\tNON, je n'ai pas l'information de cette requête dans ma Base de donnée. \n\t\t" + agent.getNom() ;
 
                 }
             } catch (XPathExpressionException e) {
                 throw new RuntimeException(e);
             }
-            resultat += "\n</RESULT>\n</Reponse>";
+            resultat += "\n \t</RESULT>\n</REPONSE>";
 
             // Écrire le résultat dans un fichier
-            // Construction du chemin de fichier
             String path = "src/ressource/XML/" + agent.getNom() + "/reponsesEnvoyer/reponse" + (i ) + ".xml";
             File file = new File(path);
 
-            // Création des dossiers si nécessaire
+            // Création des dossiers si nécessaire (normalement ils sont déjà créé)
             file.getParentFile().mkdirs();
 
             try (FileWriter writer = new FileWriter(file)) {
                 writer.write(resultat);
-                System.out.println("Le résultat a été écrit dans le fichier : " + file.getPath());
             } catch (IOException e) {
                 System.out.println("Erreur lors de l'écriture du fichier : " + e.getMessage());
             }
 
             Document document = agent.loadXMLDocumentFromResource("XML/" + agent.getNom() + "/reponsesEnvoyer/reponse" + (i ) + ".xml");
-            agent.signerDocument(document);
-            agent.getReponse().add(document);
+            agent.signerDocument(document); // On signe le document
+            agent.getReponse().add(document); // On envoie le document
         }
     }
 
-    public boolean requetesDansBDD(int i) throws XPathExpressionException {
+    /**
+     * Fonction qui permet de regarder si l'expression est dans la base de donnée de l'agent.
+     * @param expression, l'expression à vérifier.
+     * @return return True si l'expression est dans la base de donnée, non sinon.
+     * @throws XPathExpressionException
+     */
+    public boolean requetesDansBDD(String expression) throws XPathExpressionException {
 
         XPath xpath = XPathFactory.newInstance().newXPath();
         // Créer une expression XPath pour rechercher tous les éléments avec ce tag et cette valeur
-        System.out.println(recupererRequet(i));
-        String expression = recupererRequet(i);
+        //System.out.println(recupererRequet(i));
+
         XPathExpression expr = xpath.compile(expression);
 
         // Évaluer l'expression XPath sur le document
@@ -127,6 +188,12 @@ public class MonThread extends Thread {
         return nodes.getLength() > 0 ;
     }
 
+
+    /**
+     * Fonction qui permet de récuperais une requête.
+     * @param i, le numéro de la requete à récupérer.
+     * @return
+     */
     public String recupererRequet(int i){
         try {
             Document document = requetes.get(i);
@@ -144,20 +211,17 @@ public class MonThread extends Thread {
 
             String xpathExpression = parts[0]; // Première partie est l'expression XPath
 
-            // Retourner l'expression XPath complète
+
             return xpathExpression;
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null; // En cas d'erreur
+        return null;
     }
 
 
 
-    public void lireLesReponse(){
-
-    }
 
 
 
