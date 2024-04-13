@@ -1,9 +1,0 @@
-<REPONSE>
-	<QUERY>
-		/gens/personne[ville='Berlin']
-	</QUERY> 
- 	<RESULT> 
-		NON, je n'ai pas l'information de cette requête dans ma Base de donnée. 
-		Agent1
- 	</RESULT>
-</REPONSE>

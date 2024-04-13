@@ -1,9 +1,0 @@
-<REPONSE>
-	<QUERY>
-		/personnes/individu[date_de_naissance='2000-01-01']
-	</QUERY> 
- 	<RESULT> 
-		NON, je n'ai pas l'information de cette requête dans ma Base de donnée. 
-		Agent2
- 	</RESULT>
-</REPONSE>

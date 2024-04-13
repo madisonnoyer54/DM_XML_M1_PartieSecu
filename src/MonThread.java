@@ -3,7 +3,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import javax.xml.crypto.MarshalException;
-import javax.xml.crypto.dsig.XMLSignatureException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.*;
 import java.io.File;
@@ -67,6 +68,7 @@ public class MonThread extends Thread {
         // On affiche
         affichageReponses();
     }
+
 
     /**
      * Fonction qui permet d'afficher les réponses en fonction du document dans la liste.
@@ -149,7 +151,7 @@ public class MonThread extends Thread {
             resultat += "\n \t</RESULT>\n</REPONSE>";
 
             // Écrire le résultat dans un fichier
-            String path = "src/ressource/XML/" + agent.getNom() + "/reponsesEnvoyer/reponse" + (i) + ".xml";
+            String path = "src/XML/" + agent.getNom() + "/reponsesEnvoyer/reponse" + (i) + ".xml";
             File file = new File(path);
 
             // Création des dossiers si nécessaire (normalement ils sont déjà créés)
@@ -158,16 +160,14 @@ public class MonThread extends Thread {
             try (FileWriter writer = new FileWriter(file)) {
                 writer.write(resultat);
                 writer.flush(); // Assure que toutes les données sont écrites sur le disque
+                writer.close();
 
             } catch (IOException e) {
                 System.out.println("Erreur lors de l'écriture du fichier : " + e.getMessage());
             }
 
-            // Attente supplémentaire pour s'assurer que le fichier est complètement écrit sur le disque
-            Thread.sleep(3000); // Attendre une seconde
-
             // Signer le document
-            Document document = agent.loadXMLDocumentFromResource("XML/" + agent.getNom() + "/reponsesEnvoyer/reponse" + (i) + ".xml");
+            Document document = agent.loadXMLDocumentFromResource("src/XML/" + agent.getNom() + "/reponsesEnvoyer/reponse" + (i) + ".xml");
             agent.signerDocument(document);
 
             // Ajouter le document signé à la liste de réponses

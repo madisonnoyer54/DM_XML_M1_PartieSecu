@@ -100,7 +100,8 @@ public class Agent {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true); // important pour les requêtes XPath
         DocumentBuilder builder = factory.newDocumentBuilder();
-        bdd = builder.parse(Agent.class.getClassLoader().getResourceAsStream("XML/" + nom + "/BDD.xml"));
+        //bdd = builder.parse(Agent.class.getClassLoader().getResourceAsStream("XML/" + nom + "/BDD.xml"));
+        bdd = builder.parse("src/XML/" + nom + "/BDD.xml");
 
     }
 
@@ -113,7 +114,7 @@ public class Agent {
         Document document;
         for (int i = 1; i <= compteFichier(); i++) {
             try {
-                document = loadXMLDocumentFromResource("XML/" + nom + "/requetes/requete"+i+".xml");
+                document = loadXMLDocumentFromResource("src/XML/" + nom + "/requetes/requete"+i+".xml");
                 document = signerDocument(document);
                 requetes.add(document);
 
@@ -175,16 +176,12 @@ public class Agent {
      */
     public Document loadXMLDocumentFromResource(String chemin) throws Exception {
 
-        InputStream inputStream = Agent.class.getClassLoader().getResourceAsStream(chemin);
 
-        if (inputStream == null) {
-            throw new Exception("Le fichier n'a pas été trouvé");
-        }
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
         DocumentBuilder db = dbf.newDocumentBuilder();
-        Document doc = db.parse(inputStream);
-        inputStream.close();
+        Document doc = db.parse(chemin);
+
 
         return doc;
     }

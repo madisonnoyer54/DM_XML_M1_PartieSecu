@@ -1,5 +1,0 @@
-<REQUETE>
-    <QUERY>
-        /personnes/individu[date_de_naissance='2000-01-01']
-    </QUERY>
-</REQUETE>
