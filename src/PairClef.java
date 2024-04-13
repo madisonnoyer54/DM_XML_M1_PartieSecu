@@ -4,15 +4,24 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 public class PairClef {
+
+    /**
+     * La paire de clef
+     */
     private KeyPair pair;
 
-    PairClef() throws NoSuchAlgorithmException {
+
+    /**
+     * Constructeur
+     * @throws NoSuchAlgorithmException
+     */
+    public PairClef() throws NoSuchAlgorithmException {
         pair = generateKeyPair();
     }
 
 
     /**
-     * Méthode pour générer une paire de clés DSA
+     * Fonction pour générer une paire de clés DSA
      * @return la pair de clés
      * @throws NoSuchAlgorithmException
      * @throws NoSuchAlgorithmException
@@ -28,7 +37,7 @@ public class PairClef {
 
 
     /**
-     * Méthode pour encoder la clé publique en Base64
+     * Fonction pour encoder la clef publique en Base64
      * @return la clef public a encoder
      */
     public String encodePublicKey() {
@@ -38,7 +47,7 @@ public class PairClef {
 
 
     /**
-     * Méthode pour décoder une clé publique encodée en Base64
+     * Fonction pour décoder une clé publique encodée en Base64
      * @param encodedPublicKey la clé publique encodée en Base64
      * @return la clé publique décodée
      * @throws NoSuchAlgorithmException
@@ -52,11 +61,19 @@ public class PairClef {
     }
 
 
-
+    /**
+     * Getteur de la clef priver.
+     * @return la clef priver.
+     */
     public PrivateKey getPrivate() {
         return pair.getPrivate();
     }
 
+
+    /**
+     * Getteur de la clef publique.
+     * @return la clef publique.
+     */
     public PublicKey getPublic() {
         return  pair.getPublic();
     }

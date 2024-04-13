@@ -22,12 +22,12 @@ import java.util.Collections;
 
 public class Agent {
     /**
-     * La pair de clef de l'agent
+     * La paire de clef de l'agent
      */
     private PairClef keyPair;
 
     /**
-     * La clef public que l'autre agent lui à partagé
+     * La clef publique que l'autre agent lui à partager
      */
     private String publicKeyAutre;
 
@@ -42,7 +42,7 @@ public class Agent {
     private ArrayList<Document> requetes;
 
     /**
-     * Les reponses a envoyer à l'autre agent
+     * Les reponsess à envoyer à l'autre agent
      */
     private ArrayList<Document> reponse;
 
@@ -58,13 +58,14 @@ public class Agent {
     private int nombreDocument;
 
 
-
     /**
      * Constructeur
+     * @param nom, le nom de l'agent
+     * @param nombreDoc, nombre de documents que l'autre agent vas lui envoyer
      */
-    public Agent(String string, int nombreDoc) {
+    public Agent(String nom, int nombreDoc) {
         nombreDocument = nombreDoc;
-        nom = string;
+        this.nom = nom;
 
         try {
             chargerBDD();
@@ -76,7 +77,7 @@ public class Agent {
             throw new RuntimeException(e);
         }
 
-        // On lui génére sa pair de clef
+        // On lui génère sa paire de clef
         try {
             keyPair = new PairClef() ;
         } catch (NoSuchAlgorithmException e) {
@@ -90,12 +91,21 @@ public class Agent {
         requetes();
     }
 
+
+    /**
+     * Fonction qui permet de chager la base de donnée de l'agent.
+     * @throws ParserConfigurationException
+     * @throws IOException
+     * @throws SAXException
+     */
     public void chargerBDD() throws ParserConfigurationException, IOException, SAXException {
+
         // Initialiser le document XML à partir d'un fichier
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true); // important pour les requêtes XPath
         DocumentBuilder builder = factory.newDocumentBuilder();
         bdd = builder.parse(Agent.class.getClassLoader().getResourceAsStream("XML/" + nom + "/BDD.xml"));
+
     }
 
 
@@ -103,6 +113,7 @@ public class Agent {
      * Fonction qui permet de récuperais toute les requets et de les signer.
      */
     public void requetes(){
+
         Document document;
         for (int i = 1; i <= nombreDocument; i++) {
             try {
@@ -118,15 +129,23 @@ public class Agent {
 
 
     /**
-     * Fonction qui permet de démarrer le Thread de l'agent, donc la pertage des document.
+     * Fonction qui permet de démarrer le Thread de l'agent, donc la partage des documents.
      */
     public void demarrageThread(ArrayList<Document> lesRequettes, ArrayList<Document> lesReponses){
+
         Thread threadAgent = new MonThread(this, lesRequettes, lesReponses);
         threadAgent.start();
     }
 
 
+    /**
+     * Fonction qui permet de charger les documents.
+     * @param chemin, le chemin du document à récupérer.
+     * @return le doucment récupérer.
+     * @throws Exception
+     */
     public Document loadXMLDocumentFromResource(String chemin) throws Exception {
+
         InputStream inputStream = Agent.class.getClassLoader().getResourceAsStream(chemin);
         if (inputStream == null) {
             throw new Exception("Le fichier n'a pas été trouvé");
@@ -163,8 +182,8 @@ public class Agent {
                 Collections.singletonList( // Liste de transformations
                         factory.newTransform(Transform.ENVELOPED, (TransformParameterSpec) null)
                 ),
-                null, // Type
-                null // ID
+                null,
+                null
         );
 
             // Création de SignedInfo
@@ -183,6 +202,16 @@ public class Agent {
     }
 
 
+    /**
+     * Fonction qui permet de valider la signature du document donnée
+     * @param doc, le document a signer.
+     * @return
+     * @throws ParserConfigurationException
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeySpecException
+     * @throws MarshalException
+     * @throws XMLSignatureException
+     */
     public Boolean validerSignature(Document doc) throws ParserConfigurationException, NoSuchAlgorithmException, InvalidKeySpecException, MarshalException, XMLSignatureException {
         // Instanti selon lequel le document contient Signature
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -197,8 +226,7 @@ public class Agent {
             throw new RuntimeException("L'élément de signature n'a pas été trouvé ou est en double dans le document.");
         }
 
-        // LA faut voir pour déencoder la clef public de l'autree
-        // Récupération de la clé publique
+        // Récupération de la clé publique de l'autre agent.
         PublicKey publicKey = keyPair.decodePublicKey(publicKeyAutre);
 
 
@@ -213,38 +241,58 @@ public class Agent {
         return signature.validate(valContext);
     }
 
+
+    /**
+     * Getteur de la base de donnée.
+     * @return
+     */
     public Document getBdd() {
         return bdd;
     }
 
+
+    /**
+     * Getteur de la paire de clef
+     * @return
+     */
     public PairClef getKeyPair() {
         return keyPair;
     }
 
+
+    /**
+     * Setteur de la clef publique de l'autre agent.
+     * @param publicKey, la nouvelle clef.
+     */
     public void setPublicKeyAutre(String publicKey) {
         this.publicKeyAutre = publicKey;
     }
 
+
+    /**
+     * Getteur de la liste de requets.
+     * @return
+     */
     public ArrayList<Document> getRequetes() {
         return requetes;
     }
 
+
+    /**
+     * Getteur du nom.
+     * @return
+     */
     public String getNom() {
         return nom;
     }
 
 
+    /**
+     * Getteur de la liste des réponses.
+     * @return
+     */
     public ArrayList<Document> getReponse() {
         return reponse;
     }
-
-    public boolean verifieRequeteBDD(Document requete){
-        Boolean resultat = false;
-
-
-        return resultat;
-    }
-
-
 
 }
