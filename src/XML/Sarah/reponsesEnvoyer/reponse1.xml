@@ -1,9 +1,9 @@
 <REPONSE>
 	<QUERY>
-		/personnes/individu[prenom='Marc']
+		/gens/personne[prenom='John']
 	</QUERY> 
  	<RESULT> 
 		OUI, j'ai l'information de cette requête dans ma Base de donnée.
-		Agent2
+		Sarah
  	</RESULT>
 </REPONSE>

@@ -15,7 +15,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.*;
@@ -114,7 +113,7 @@ public class Agent {
         Document document;
         for (int i = 1; i <= compteFichier(); i++) {
             try {
-                document = loadXMLDocumentFromResource("src/XML/" + nom + "/requetes/requete"+i+".xml");
+                document = loadXMLDocument("src/XML/" + nom + "/requetes/requete"+i+".xml");
                 document = signerDocument(document);
                 requetes.add(document);
 
@@ -130,15 +129,10 @@ public class Agent {
      * @return, le nombre de fichier.
      */
     public int compteFichier() {
-        // Obtention de l'URL du dossier
-        URL folderUrl = Agent.class.getClassLoader().getResource("XML/" + nom + "/requetes");
-        if (folderUrl == null) {
-            throw new IllegalArgumentException("Le dossier spécifié n'existe pas.");
-        }
 
-        try {
+
             // Conversion de l'URL en chemin de fichier
-            File folder = new File(folderUrl.toURI());
+            File folder = new File("src/XML/" + nom + "/requetes");
 
             // Vérification que le chemin correspond à un dossier existant
             if (!folder.exists() || !folder.isDirectory()) {
@@ -152,9 +146,7 @@ public class Agent {
             }
 
             return files.length;
-        } catch (URISyntaxException e) {
-            throw new RuntimeException("Erreur lors de la conversion de l'URL en URI : " + e.getMessage());
-        }
+
     }
 
 
@@ -174,7 +166,7 @@ public class Agent {
      * @return le doucment récupérer.
      * @throws Exception
      */
-    public Document loadXMLDocumentFromResource(String chemin) throws Exception {
+    public Document loadXMLDocument(String chemin) throws Exception {
 
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

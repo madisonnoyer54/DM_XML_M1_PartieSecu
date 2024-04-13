@@ -3,14 +3,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import javax.xml.crypto.MarshalException;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
@@ -167,7 +164,7 @@ public class MonThread extends Thread {
             }
 
             // Signer le document
-            Document document = agent.loadXMLDocumentFromResource("src/XML/" + agent.getNom() + "/reponsesEnvoyer/reponse" + (i) + ".xml");
+            Document document = agent.loadXMLDocument("src/XML/" + agent.getNom() + "/reponsesEnvoyer/reponse" + (i) + ".xml");
             agent.signerDocument(document);
 
             // Ajouter le document signé à la liste de réponses

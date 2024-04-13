@@ -16,10 +16,10 @@ public class Main {
      * Le main.
      * @param args
      */
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
 
-        agent1 = new Agent("Agent1");
-        agent2 = new Agent("Agent2");
+        agent1 = new Agent("Paul");
+        agent2 = new Agent("Sarah");
 
         // On transmet les clefs
         agent1.setPublicKeyAutre(agent2.getKeyPair().encodePublicKey());

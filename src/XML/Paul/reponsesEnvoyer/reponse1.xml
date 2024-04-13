@@ -1,9 +1,9 @@
 <REPONSE>
 	<QUERY>
-		/gens/personne[date_de_naissance='1995-12-03']
+		/personnes/individu[prenom='Marc']
 	</QUERY> 
  	<RESULT> 
 		OUI, j'ai l'information de cette requête dans ma Base de donnée.
-		Agent1
+		Paul
  	</RESULT>
 </REPONSE>
