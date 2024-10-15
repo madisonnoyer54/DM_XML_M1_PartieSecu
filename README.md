@@ -1,5 +1,5 @@
 # Projet BD XML sécurisées
-
+Projet réalisé en Master 1 Informatique dans le cadre de l'UE Données Semi-Structurées et XML.
 L’objectif de ce TP est d’implanter une application java permettant à deux agents (threads) de
 lire des bases de données XML distribuées (stockées sous forme de documents XML) par
 l’intermédiaire de requêtes XPath échangées dans un format XML sécurisé.
